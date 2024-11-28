@@ -1,0 +1,26 @@
+# Ignore Android Studio project files
+*.iml
+.gradle/
+/.idea/
+/.idea/caches/
+/.idea/libraries/
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# Ignore local configuration files
+local.properties
+.DS_Store
+
+# Ignore build output directories
+/build/
+/captures/
+
+# Ignore native build artifacts
+.externalNativeBuild/
+/.cxx/
+
+# Ignore miscellaneous system files
+*.log
+Thumbs.db
