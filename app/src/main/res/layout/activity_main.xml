@@ -12,9 +12,9 @@
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="THIS IS A TEST, HELLOOOOOOOOOOOOOO"
+            android:layout_width="303dp"
+            android:layout_height="71dp"
+            android:text="Pizza Time"
             android:textSize="60sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
