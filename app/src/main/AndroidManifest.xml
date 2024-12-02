@@ -13,6 +13,9 @@
         android:theme="@style/Theme.RUPizza"
         tools:targetApi="31">
         <activity
+            android:name=".PlacedOrders"
+            android:exported="false" />
+        <activity
             android:name=".ViewCart"
             android:exported="false" />
         <activity
