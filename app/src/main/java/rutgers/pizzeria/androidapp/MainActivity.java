@@ -28,4 +28,28 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
+
+    public void viewCart(View view) {
+        ImageButton imgBtn = (ImageButton) view;
+        String tag = (String) imgBtn.getTag(); // Read the tag
+        //Toast.makeText(this, "Clicked: " + tag, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, ViewCart.class);
+
+        //intent.putExtra("pizzaSelected",tag);
+
+        startActivity(intent);
+    }
+
+    public void viewPlacedOrders(View view) {
+        ImageButton imgBtn = (ImageButton) view;
+        String tag = (String) imgBtn.getTag(); // Read the tag
+        //Toast.makeText(this, "Clicked: " + tag, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, PlacedOrders.class);
+
+        //intent.putExtra("pizzaSelected",tag);
+
+        startActivity(intent);
+    }
 }

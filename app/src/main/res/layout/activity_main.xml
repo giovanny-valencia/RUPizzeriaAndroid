@@ -24,25 +24,27 @@
 
         <ImageButton
             android:id="@+id/imageButton3"
-            android:tag="viewCart"
             android:layout_width="117dp"
             android:layout_height="95dp"
             android:layout_marginEnd="56dp"
             android:layout_marginBottom="24dp"
+            android:onClick="viewCart"
             android:scaleType="fitCenter"
+            android:tag="viewCart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/shopping_cart" />
 
         <ImageButton
             android:id="@+id/imageButton2"
-            android:tag="viewAllOrders"
             android:layout_width="117dp"
             android:layout_height="95dp"
             android:layout_marginStart="56dp"
             android:layout_marginEnd="94dp"
             android:layout_marginBottom="24dp"
+            android:onClick="viewPlacedOrders"
             android:scaleType="fitCenter"
+            android:tag="viewAllOrders"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageButton3"
             app:layout_constraintHorizontal_bias="0.0"
