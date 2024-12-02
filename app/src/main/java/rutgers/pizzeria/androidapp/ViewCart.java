@@ -26,7 +26,7 @@ import rutgers.pizzeria.androidapp.models.pizza.Pizza;
 
 public class ViewCart extends AppCompatActivity implements AdapterView.OnItemClickListener  {
 
-
+    ShareResource resource = ShareResource.getInstance();
     private ListView lv_pizza;
 
     private TextView tv_orderNum; //might use to R.getIDs
@@ -54,8 +54,17 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.view_cart);
         lv_pizza = findViewById(R.id.listView);
         obl_pizzas = new ObservableArrayList<>();
-        //pizzas = ord
-        //Collections.addAll(obl_pizzas, pizzas);
+        pizzas = resource.getOrder().getPizzas();
+        //obl_pizzas.addAll(pizzas);
+        //OR
+        for(Pizza pizza: pizzas){
+            obl_pizzas.add(pizza);
+        }
+        //The statement below create an adapter for the ListView and set the data source to the
+        //ObservableList.
+        items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
+        lv_pizza.setAdapter(items); //set the adapter of the ListView to the source
+        lv_pizza.setOnItemClickListener(this); //add a listener to the ListView
         }
 
     /**
@@ -67,6 +76,30 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        removePizza(view, position);
+    }
+
+    /**
+     * Removes a pizza when user clicked the Remove pizza button
+     * Displays alert messages when user attempts to click button without
+     * selecting a pizza or when the cart is empty
+     */
+    public void removePizza(View view, int i) {
+
+    }
+    /**
+     * Clears all the pizzas inside the cart when user clicked the Clear Cart button
+     * Displays alert messages when user attempts to click button when the cart is already empty
+     */
+    public void clearCart(View view) {
+
+    }
+
+    /**
+     * Allows user to place an order when the cart is not empty
+     * Displays a message when user attempts to place an order while the cart is empty
+     */
+    public void placeOrder(View view) {
 
     }
 }
