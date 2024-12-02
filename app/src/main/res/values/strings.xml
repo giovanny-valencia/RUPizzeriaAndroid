@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">RUPizza</string>
+    <string name="pizza_name_build_your_own">Build Your Own</string>
+    <string name="pizza_name_deluxe_pizza">Deluxe Pizza</string>
+    <string name="pizza_name_bbq_chicken_pizza">BBQ Chicken Pizza</string>
+    <string name="pizza_name_meatzza_pizza">Meatzza Pizza</string>
+    <string name="title_pizza_selected">Pizza Selected:</string>
+    <string name="placeholder_pizza_selected">Pizza</string>
+    <string name="selection_crust_style">Select Pizza Crust Style</string>
+    <string name="selection_pizza_size">Select Pizza Size</string>
+    <string name="title_toppings">Toppings</string>
+    <string name="button_text_cancel">Cancel</string>
+    <string name="button_text_add_to_order">Add To Order</string>
 </resources>

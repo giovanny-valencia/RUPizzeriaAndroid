@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,7 +11,7 @@
 
         <ImageButton
             android:id="@+id/imageButton4"
-            android:tag="bbqChicken"
+            android:tag="BBQ Chicken"
             android:layout_width="125dp"
             android:layout_height="95dp"
             android:layout_marginStart="56dp"
@@ -52,7 +51,7 @@
 
         <ImageButton
             android:id="@+id/imgBtnByo"
-            android:tag="byo"
+            android:tag="Build Your Own"
             android:layout_width="125dp"
             android:layout_height="95dp"
             android:layout_marginStart="56dp"
@@ -74,7 +73,7 @@
             android:layout_marginEnd="64dp"
             android:layout_marginBottom="69dp"
             android:scaleType="fitCenter"
-            android:text="Build Your Own"
+            android:text="@string/pizza_name_build_your_own"
             android:textAlignment="viewStart"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -92,7 +91,7 @@
             android:layout_marginStart="52dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="65dp"
-            android:text="Deluxe Pizza"
+            android:text="@string/pizza_name_deluxe_pizza"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton5"
@@ -110,7 +109,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="69dp"
             android:scaleType="fitCenter"
-            android:text="BBQ Chicken Pizza"
+            android:text="@string/pizza_name_bbq_chicken_pizza"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
@@ -127,7 +126,7 @@
             android:layout_marginStart="56dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="65dp"
-            android:text="Meatzza Pizza"
+            android:text="@string/pizza_name_meatzza_pizza"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton6"
@@ -139,7 +138,7 @@
 
         <ImageButton
             android:id="@+id/imageButton5"
-            android:tag="deluxe"
+            android:tag="Deluxe"
             android:layout_width="125dp"
             android:layout_height="95dp"
             android:layout_marginStart="56dp"
@@ -152,7 +151,7 @@
 
         <ImageButton
             android:id="@+id/imageButton6"
-            android:tag="meatzza"
+            android:tag="Meatzza"
             android:layout_width="125dp"
             android:layout_height="95dp"
             android:layout_marginStart="56dp"
