@@ -11,4 +11,33 @@
     <string name="title_toppings">Toppings</string>
     <string name="button_text_cancel">Cancel</string>
     <string name="button_text_add_to_order">Add To Order</string>
+
+    <string-array name="crust">
+        <item>Chicago</item>
+        <item>New York</item>
+    </string-array>
+
+    <string-array name="size">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+    <string-array name="toppings">
+        <item>Bacon</item>
+        <item>BBQ Chicken</item>
+        <item>Beef</item>
+        <item>Cheddar</item>
+        <item>Garlic</item>
+        <item>Green Pepper</item>
+        <item>Ham</item>
+        <item>Mushroom</item>
+        <item>Onion</item>
+        <item>Pepperoni</item>
+        <item>Pineapple</item>
+        <item>Provolone</item>
+        <item>Sausage</item>
+    </string-array>
+
+
 </resources>
