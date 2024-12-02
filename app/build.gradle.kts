@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation(libs.material)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.databinding.common)
+    implementation(libs.androidx.databinding.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
