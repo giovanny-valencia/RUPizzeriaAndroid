@@ -16,6 +16,7 @@
     <string name="ordertotal">Order Total</string>
     <string name="bt_clear">CLEAR</string>
     <string name="bt_placeorder">PLACE ORDER</string>
+    <string name="bt_cancelOrder">CANCEL ORDER</string>
     <string name="cartTitle">Cart</string>
     <string name="placeOrderTitle">Placed Order</string>
     <string name="orderNumLabel">Order# </string>

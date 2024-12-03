@@ -114,7 +114,6 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 removePizza(view, position);
-                Toast.makeText(getApplicationContext(), "you cliked YES, removed", Toast.LENGTH_LONG).show();
             }
         }).setNegativeButton("no", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -135,13 +134,19 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         pizzas.remove(i);
         setPriceValue();
         items.notifyDataSetChanged(); //updates the listview
+        Toast.makeText(getApplicationContext(), "pizza removed", Toast.LENGTH_SHORT).show();
     }
     /**
      * Clears all the pizzas inside the cart when user clicked the Clear Cart button
      * Displays alert messages when user attempts to click button when the cart is already empty
      */
     public void clearCart(View view) {
-
+        if(obl_pizzas.isEmpty())
+            Toast.makeText(getApplicationContext(), "Cart is already empty", Toast.LENGTH_SHORT).show();
+        obl_pizzas.clear(); //remove from the data source
+        pizzas.clear();
+        setPriceValue();
+        items.notifyDataSetChanged();
     }
 
     /**
@@ -149,7 +154,29 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
      * Displays a message when user attempts to place an order while the cart is empty
      */
     public void placeOrder(View view) {
+        if(!order.getPizzas().isEmpty()) {
+            resource.getPlacedOrdersList().add(order);
+            Order newOrder = new Order();
+            resource.createNewOrder(newOrder);
+            finish();
+        }
+        else{
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Message"); // Title of the alert
+            alert.setMessage("The Cart is Empty"); // Warning message
 
+            // Set the positive button
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Action for OK button
+                    dialog.dismiss();
+                }
+            });
+            // Create and show the alert
+            AlertDialog dialog = alert.create();
+            alert.show();
+        }
     }
 }
 
