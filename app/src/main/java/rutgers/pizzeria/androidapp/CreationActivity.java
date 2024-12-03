@@ -5,29 +5,85 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.HashMap;
+
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final String CHICAGO_CRUST = "Chicago";
+    private static final String NEW_YORK_CRUST = "New York";
+    private Spinner spinnerCrustStylePizza;
 
-    Spinner spinnerCrustStylePizza;
+    private Spinner spinnerSizePizza;
 
-    Spinner spinnerSizePizza;
+    private String selectedPizza = null;
 
-    String selectedPizza = null;
+    private String styleCrust = NEW_YORK_CRUST;
+
+    private HashMap<String, Integer> crustImageMap = new HashMap<>();
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String intentKey = "pizzaSelected";
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_creation);
 
         Intent intent = getIntent();
-        selectedPizza = intent.getStringExtra("pizzaSelected");
+        selectedPizza = intent.getStringExtra(intentKey);
         TextView textViewSelectedPizza = findViewById(R.id.textViewSelectedPizza);
         textViewSelectedPizza.setText(selectedPizza);
+
+        setUpSpinners();
+
+        generatePizzaImageHash();
+    }
+
+    private void generatePizzaImageHash() {
+        String byo = "Build Your Own";
+        String bbqChicken = "BBQ Chicken";
+        String deluxe = "Deluxe";
+        String meatzza = "Meatzza";
+
+        if (selectedPizza.equals(byo)){
+            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
+            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
+        }
+        else if (selectedPizza.equals(bbqChicken)) {
+            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
+            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_bbq_chicken_thin_crust); //thin
+        }
+        else if (selectedPizza.equals(deluxe)) {
+            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_deluxe_chicago_deep_dish); //deep dish
+            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_brooklyn); //brooklyn
+        }
+        else if (selectedPizza.equals(meatzza)) {
+            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_meatzza_stuffed); //stuffed
+            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
+        }
+    }
+
+    private void displayPizzaImage(String crust){
+        ImageView imagePizza = findViewById(R.id.imagePizza);
+        Integer img = crustImageMap.get(crust);
+
+        System.out.println(img);
+
+        if (img != null){
+            imagePizza.setImageResource(img);
+        }
+    }
+
+    private void setUpSpinners() {
+        int mediumPizzaSize = 1;
 
         spinnerCrustStylePizza = findViewById(R.id.spinnerCrustStylePizza);
         spinnerSizePizza = findViewById(R.id.spinnerSizePizza);
@@ -39,9 +95,12 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         adapterSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinnerCrustStylePizza.setAdapter(adapterCrust);
-        spinnerCrustStylePizza.setOnItemSelectedListener(this);
         spinnerSizePizza.setAdapter(adapterSize);
+
+        spinnerCrustStylePizza.setOnItemSelectedListener(this);
         spinnerSizePizza.setOnItemSelectedListener(this);
+
+        spinnerSizePizza.post(()-> spinnerSizePizza.setSelection(mediumPizzaSize));
     }
 
     //just returns to main activity
@@ -52,11 +111,17 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         String selected = adapterView.getItemAtPosition(i).toString();
-        Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show(); // for debugging, remove this
+
+        //only attempt to change the pizza display image if the adapter is linked to crust spinner
+        if (adapterView.getId() == R.id.spinnerCrustStylePizza){
+            displayPizzaImage(spinnerCrustStylePizza.getSelectedItem().toString());
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
+        //do nothing
     }
 }
