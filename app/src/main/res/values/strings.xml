@@ -11,6 +11,12 @@
     <string name="title_toppings">Toppings</string>
     <string name="button_text_cancel">Cancel</string>
     <string name="button_text_add_to_order">Add To Order</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="salestax">SalesTax</string>
+    <string name="ordertotal">Order Total</string>
+    <string name="bt_clear">CLEAR</string>
+    <string name="bt_placeorder">PLACE ORDER</string>
+    <string name="cartTitle">Cart</string>
 
     <string-array name="crust">
         <item>Chicago</item>

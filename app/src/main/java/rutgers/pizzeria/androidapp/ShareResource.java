@@ -2,6 +2,8 @@ package rutgers.pizzeria.androidapp;
 
 import java.util.ArrayList;
 
+import rutgers.pizzeria.androidapp.models.factory.ChicagoPizza;
+import rutgers.pizzeria.androidapp.models.factory.PizzaFactory;
 import rutgers.pizzeria.androidapp.models.orders.Order;
 import rutgers.pizzeria.androidapp.models.pizza.Pizza;
 
@@ -16,6 +18,26 @@ public final class ShareResource {
         order = new Order();
         //pizzas = order.getPizzas();
         placedOrders = new ArrayList<Order>();
+        createPizzas();
+    }
+
+    public void createPizzas(){
+        PizzaFactory pizzaFactory = new ChicagoPizza();
+        Pizza pizza = pizzaFactory.createDeluxe();
+        Pizza pizza2 = pizzaFactory.createBBQChicken();
+        Pizza pizza3 = pizzaFactory.createMeatzza();
+        Pizza pizza4 = pizzaFactory.createDeluxe();
+        Pizza pizza5 = pizzaFactory.createDeluxe();
+        Pizza pizza6 = pizzaFactory.createDeluxe();
+        Pizza pizza7 = pizzaFactory.createDeluxe();
+
+        order.addPizza(pizza);
+        order.addPizza(pizza2);
+        order.addPizza(pizza3);
+        order.addPizza(pizza4);
+        order.addPizza(pizza5);
+        order.addPizza(pizza6);
+        order.addPizza(pizza7);
     }
 
     /**
