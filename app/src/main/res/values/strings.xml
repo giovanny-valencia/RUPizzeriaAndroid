@@ -20,6 +20,7 @@
     <string name="cartTitle">Cart</string>
     <string name="placeOrderTitle">Placed Order</string>
     <string name="orderNumLabel">Order# </string>
+    <string name="topping_name">Topping_name</string>
 
 
     <string-array name="crust">
