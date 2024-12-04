@@ -174,7 +174,7 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
             });
             // Create and show the alert
             AlertDialog dialog = alert.create();
-            alert.show();
+            dialog.show();
         }
     }
 }

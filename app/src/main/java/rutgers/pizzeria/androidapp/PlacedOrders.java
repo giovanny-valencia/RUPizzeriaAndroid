@@ -1,5 +1,6 @@
 package rutgers.pizzeria.androidapp;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -7,14 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
 import androidx.databinding.ObservableArrayList;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
 
     ShareResource resource = ShareResource.getInstance();
 
-    private ListView listview;
+    private ListView listView;
     private Spinner sp_orderNum;
     //private TextView lb_orderNum;
     private EditText orderTotal;
@@ -38,6 +36,7 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
     ArrayAdapter<Pizza> items;
     ArrayAdapter<Integer> adapter; //adapter for spinner
     Order order;
+    String currentOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,7 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
 
         sp_orderNum = findViewById(R.id.sp_orderNum);
         orderTotal = findViewById(R.id.orderTotal);
-        listview = findViewById(R.id.listView2);
+        listView = findViewById(R.id.listView2);
 
         //Create a dynamic list of items
         //orderNums = new ArrayList<>();
@@ -77,6 +76,8 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         //get selected item
         String selectedItem = parent.getItemAtPosition(position).toString();
 
+        currentOrder = selectedItem;
+
         //Show a Toast with the selected Item
         Toast.makeText(this, "Selected Order Number: " + selectedItem, Toast.LENGTH_SHORT).show();
         //display the list of pizzas here
@@ -84,6 +85,12 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         order = orderList.get(Integer.parseInt(selectedItem));
         pizzas = order.getPizzas();
         orderTotal.setText(String.format("$%.2f", order.calculateTotal()));
+
+        obl_pizzas = new ObservableArrayList<>();
+        items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
+
+        obl_pizzas.addAll(pizzas);
+        listView.setAdapter(items); //set the adapter of the ListView to the source
     }
 
     //default dapat
@@ -95,11 +102,36 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         Toast.makeText(this, "Order Number 1: ", Toast.LENGTH_SHORT).show();
     }
 
-    public void cancelOrder(String item){
+    public void cancelOrder(){
         //change values of orderNum, orderNums arraylist is connected to adapter
-        for(Order order: orderList)
-            orderNums.add(order.getOrderNumber());
+        if(!orderList.isEmpty()){
 
-        sp_orderNum.setAdapter(adapter); //change the orderNums
+            orderList.remove(Integer.parseInt(currentOrder));
+            orderNums.remove(Integer.parseInt(currentOrder));
+
+            /*for(Order order: orderList)
+                orderNums.add(order.getOrderNumber());
+
+            */
+            sp_orderNum.setAdapter(adapter); //change the orderNums
+        }
+        else{
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Message"); // Title of the alert
+            alert.setMessage("There are no placed orders"); // Warning message
+
+            // Set the positive button
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Action for OK button
+                    dialog.dismiss();
+                }
+            });
+            // Create and show the alert
+            AlertDialog dialog = alert.create();
+            dialog.show();
+        }
+
     }
 }
