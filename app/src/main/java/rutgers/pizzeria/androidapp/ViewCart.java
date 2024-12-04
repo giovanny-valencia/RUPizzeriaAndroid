@@ -52,7 +52,6 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) { //creates this everytime this activity is opened
@@ -60,13 +59,13 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.view_cart);
 
         //instantiate variables
-        obl_pizzas = new ObservableArrayList<>(); //initialize observableList
+        obl_pizzas = new ObservableArrayList<>(); //
         //create an adapter for the ListView and set the data source to the ObservableList
         items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
 
         //get global data
         order = resource.getOrder();
-        pizzas = resource.getOrder().getPizzas(); //gets the pizzas in the order
+        pizzas = order.getPizzas(); //gets the pizzas in the order
 
         //test-purposes
         getIDs();
