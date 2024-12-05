@@ -11,7 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -26,6 +29,9 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
     private String styleCrust = NEW_YORK_CRUST;
 
     private HashMap<String, Integer> crustImageMap = new HashMap<>();
+
+    private ArrayList<ToppingModel> toppings;
+
 
 
 
@@ -45,6 +51,20 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         setUpSpinners();
 
         generatePizzaImageHash();
+
+        toppings = ToppingModel.getToppings(this);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+
+        Topping_RecyclerViewAdapter adapter = new Topping_RecyclerViewAdapter(this, toppings);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        for (int i = 0; i < toppings.size(); i++){
+            System.out.println(toppings.get(i).getName() + " - " + toppings.get(i).getImageResId());
+        }
+
     }
 
     private void generatePizzaImageHash() {

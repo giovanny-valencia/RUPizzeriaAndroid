@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    List<ToppingModel> toppings = new ArrayList<>();
+    List<ToppingModel> toppings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Link to the blank layout
         setContentView(R.layout.activity_main);
-
-        //create the topping layout models since this only needs to happen once on app startup
     }
 
     public void handlePizzaClick(View view) {
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(this, CreationActivity.class);
+
 
         intent.putExtra("pizzaSelected",tag);
 

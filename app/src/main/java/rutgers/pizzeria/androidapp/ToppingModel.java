@@ -2,14 +2,13 @@ package rutgers.pizzeria.androidapp;
 
 import android.content.Context;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ToppingModel {
     private final String name;
     private final int imageResId;
 
     // Static list to hold all toppings
-    private static final List<ToppingModel> toppings = new ArrayList<>();
+    private static final ArrayList<ToppingModel> toppings = new ArrayList<>();
 
     // images
     private static final int[] img = {
@@ -48,7 +47,7 @@ public class ToppingModel {
     }
 
     // called by main activity to get and pass creation the toppings
-    public List<ToppingModel> getToppings(Context context) {
+    public static ArrayList<ToppingModel> getToppings(Context context) {
         if (toppings.isEmpty()){
             setUpToppings(context);
         }
