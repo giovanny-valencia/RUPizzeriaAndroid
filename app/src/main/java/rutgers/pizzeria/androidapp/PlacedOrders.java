@@ -130,10 +130,8 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
      */
     public void cancelOrder(View view){
         if(!orderList.isEmpty()){
-
             orderList.remove(indexOfCurrentOrder);
             orderNums.remove(indexOfCurrentOrder);
-            obl_pizzas.clear();
 
             sp_orderNum.setAdapter(adapter); //update the order numbers
 
