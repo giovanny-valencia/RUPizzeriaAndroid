@@ -79,6 +79,7 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
 
         lv_pizza.setAdapter(items); //set the adapter of the ListView to the source
         lv_pizza.setOnItemClickListener(this); //add a listener to the ListView
+        System.out.println("Items are displayed");
     }
 
     private void setPriceValue(){
@@ -140,12 +141,15 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
      * Displays alert messages when user attempts to click button when the cart is already empty
      */
     public void clearCart(View view) {
-        if(obl_pizzas.isEmpty())
+        if(pizzas.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Cart is already empty", Toast.LENGTH_SHORT).show();
-        obl_pizzas.clear(); //remove from the data source
-        pizzas.clear();
-        setPriceValue();
-        items.notifyDataSetChanged();
+        }
+        else {
+            obl_pizzas.clear(); //remove from the data source
+            pizzas.clear();
+            setPriceValue();
+            items.notifyDataSetChanged();
+        }
     }
 
     /**

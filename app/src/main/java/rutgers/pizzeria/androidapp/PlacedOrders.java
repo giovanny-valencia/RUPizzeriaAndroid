@@ -9,24 +9,18 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.databinding.ObservableArrayList;
-
 import java.util.ArrayList;
-
 import rutgers.pizzeria.androidapp.models.orders.Order;
 import rutgers.pizzeria.androidapp.models.pizza.Pizza;
 
 public class PlacedOrders extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-
     ShareResource resource = ShareResource.getInstance();
 
     private ListView listView;
     private Spinner sp_orderNum;
-    //private TextView lb_orderNum;
     private EditText orderTotal;
 
     ObservableArrayList<Pizza> obl_pizzas;
@@ -36,7 +30,7 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
     ArrayAdapter<Pizza> items;
     ArrayAdapter<Integer> adapter; //adapter for spinner
     Order order;
-    String currentOrder;
+    int indexOfCurrentOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +43,6 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         sp_orderNum = findViewById(R.id.sp_orderNum);
         orderTotal = findViewById(R.id.orderTotal);
         listView = findViewById(R.id.listView2);
-
-        //Create a dynamic list of items
-        //orderNums = new ArrayList<>();
 
         //have to be called again when an order is removed
         //populate the orderNum arraylist
@@ -76,13 +67,14 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         //get selected item
         String selectedItem = parent.getItemAtPosition(position).toString();
 
-        currentOrder = selectedItem;
+        indexOfCurrentOrder = Integer.parseInt(selectedItem)-1; //subtract one to get the index
+        System.out.println("The index of the current number is:" + indexOfCurrentOrder);
 
         //Show a Toast with the selected Item
         Toast.makeText(this, "Selected Order Number: " + selectedItem, Toast.LENGTH_SHORT).show();
-        //display the list of pizzas here
 
-        order = orderList.get(Integer.parseInt(selectedItem));
+        order = orderList.get(indexOfCurrentOrder);
+
         pizzas = order.getPizzas();
         orderTotal.setText(String.format("$%.2f", order.calculateTotal()));
 
@@ -93,27 +85,31 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         listView.setAdapter(items); //set the adapter of the ListView to the source
     }
 
-    //default dapat
+    //default
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        // Set default value (e.g., second item in the list)
-        int defaultPosition = 0; // Index of the default item (0-based index)
-        sp_orderNum.setSelection(defaultPosition);
-        Toast.makeText(this, "Order Number 1: ", Toast.LENGTH_SHORT).show();
+        //empty
     }
 
-    public void cancelOrder(){
+    public void cancelOrder(View view){
         //change values of orderNum, orderNums arraylist is connected to adapter
         if(!orderList.isEmpty()){
 
-            orderList.remove(Integer.parseInt(currentOrder));
-            orderNums.remove(Integer.parseInt(currentOrder));
+            orderList.remove(indexOfCurrentOrder);
+            orderNums.remove(indexOfCurrentOrder);
+            obl_pizzas.clear();
 
             /*for(Order order: orderList)
                 orderNums.add(order.getOrderNumber());
-
             */
             sp_orderNum.setAdapter(adapter); //change the orderNums
+
+            if(orderList.isEmpty()) {
+                obl_pizzas.clear();
+                items.notifyDataSetChanged();
+                orderTotal.setText("");
+                Toast.makeText(this, "No orders placed", Toast.LENGTH_SHORT).show();
+            }
         }
         else{
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
