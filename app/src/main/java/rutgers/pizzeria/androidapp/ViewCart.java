@@ -10,44 +10,34 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-//import androidx.activity.EdgeToEdge;
-
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.ObservableArrayList;
-
-
 import java.util.ArrayList;
-import java.util.Collections;
-
-import rutgers.pizzeria.androidapp.models.factory.ChicagoPizza;
-import rutgers.pizzeria.androidapp.models.factory.PizzaFactory;
 import rutgers.pizzeria.androidapp.models.orders.Order;
 import rutgers.pizzeria.androidapp.models.pizza.Pizza;
 
+/**
+ * ViewCart is the activity class that handles the backend of view_carl.xml layout(user interface).
+ * It contains the pizzas added by users including the subtotal, sales,tax, order number, and the order total.
+ * Allows user to view the pizzas added by the user and have the features to remove a pizza or clear the cart
+ * and to place an order
+ * @author Miguel Nino Adalla
+ */
 public class ViewCart extends AppCompatActivity implements AdapterView.OnItemClickListener  {
 
-    ShareResource resource = ShareResource.getInstance();
+    ShareResource resource = ShareResource.getInstance(); //get the instance of the central control
     private ListView lv_pizza;
-
     private TextView tv_orderNum; //might use to R.getIDs
-
-    private Button remove_button, clear_button, placeOrder_button;
-
     private EditText te_subTotal, te_salesTax, te_orderTotal;
-    ObservableArrayList<Pizza> obl_pizzas;
 
+    ObservableArrayList<Pizza> obl_pizzas;
     ArrayList<Pizza> pizzas; //get pizzas from activity 2
     ArrayAdapter<Pizza> items;
-
     Order order;
 
     /**
+     * This method runs whenever the activity is opened/visited
      *
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
@@ -59,7 +49,7 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         setContentView(R.layout.view_cart);
 
         //instantiate variables
-        obl_pizzas = new ObservableArrayList<>(); //
+        obl_pizzas = new ObservableArrayList<>();
         //create an adapter for the ListView and set the data source to the ObservableList
         items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
 
@@ -67,7 +57,7 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         order = resource.getOrder();
         pizzas = order.getPizzas(); //gets the pizzas in the order
 
-        //test-purposes
+        //set the UI ids to this class' android widgets.
         getIDs();
 
         tv_orderNum.setText("Order# " + order.getOrderNumber());
@@ -79,15 +69,20 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
 
         lv_pizza.setAdapter(items); //set the adapter of the ListView to the source
         lv_pizza.setOnItemClickListener(this); //add a listener to the ListView
-        System.out.println("Items are displayed");
     }
 
+    /**
+     * Set the numerical values of EditText objects to display the prices of pizzas
+     */
     private void setPriceValue(){
         te_subTotal.setText(String.format("$%.2f", order.calculateSubtotal()));
         te_salesTax.setText(String.format("$%.2f", order.calculateSalesTax()));
         te_orderTotal.setText(String.format("$%.2f", order.calculateTotal()));
     }
 
+    /**
+     * Set the UI ids of the android objects to this class' android object varaibles
+     */
     private void getIDs(){
         tv_orderNum = findViewById(R.id.tv_orderNum); //connect the textView object
         lv_pizza = findViewById(R.id.listView);
@@ -98,9 +93,11 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     /**
-     * The event Handler for the onItemClick event on the ListView
+     * The event Handler for the onItemClick event on the ListView. An alert dialog pops up when an
+     * item is pressed clicked and allows the user to choose whether to remove an item(pizza) from the listview.
+     *
      * @param parent The AdapterView where the click happened.
-     * @param view The View within the AdapterView that was clicked (in this example is ListView)
+     * @param view The View within the AdapterView that was clicked
      * @param position the index/position of the view that was clicked in the adapter.
      * @param id the raw id of the item that was clicked.
      */
@@ -108,7 +105,6 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle("Message");
-        //alert.setMessage(parent.getAdapter().getItem(position).toString());
         alert.setMessage("Remove this item?");
         //anonymous inner class to handle the onClick event of YES or NO.
         alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
@@ -125,9 +121,10 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
     }
 
     /**
-     * Removes a pizza when user clicked the Remove pizza button
-     * Displays alert messages when user attempts to click button without
-     * selecting a pizza or when the cart is empty
+     * Removes a pizza when user clicked "yes" on the alert dialog after they clicked an item on the listview
+     *
+     * @param view the view
+     * @param i the index of the pizza item selected on the listview
      */
     public void removePizza(View view, int i) {
         obl_pizzas.remove(i); //remove from the data source
@@ -137,8 +134,13 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
         Toast.makeText(getApplicationContext(), "pizza removed", Toast.LENGTH_SHORT).show();
     }
     /**
-     * Clears all the pizzas inside the cart when user clicked the Clear Cart button
-     * Displays alert messages when user attempts to click button when the cart is already empty
+     * Clears the contents of the shopping cart.
+     *
+     * <p>This method is triggered when the user selects the "Clear Cart" action.
+     *  It removes all items from the cart and updates the UI to reflect the changes.
+     *  If the cart is already empty, a Toast message is displayed informing the user.</p>
+     *
+     * @param view the view within the clear button that was clicked
      */
     public void clearCart(View view) {
         if(pizzas.isEmpty()) {
@@ -155,6 +157,8 @@ public class ViewCart extends AppCompatActivity implements AdapterView.OnItemCli
     /**
      * Allows user to place an order when the cart is not empty
      * Displays a message when user attempts to place an order while the cart is empty
+     *
+     * @param view the view within button that was clicked
      */
     public void placeOrder(View view) {
         if(!order.getPizzas().isEmpty()) {

@@ -16,6 +16,13 @@ import java.util.ArrayList;
 import rutgers.pizzeria.androidapp.models.orders.Order;
 import rutgers.pizzeria.androidapp.models.pizza.Pizza;
 
+/**
+ * PlacedOrders is the activity class contains the backend of placed_orders.xml(user interface)
+ * This manages the data of placed orders stored in central control(ShareResource) holding
+ * each order's information including the total amount($) and pizzas.
+ * Allows user to view the orders placed and the feature to cancel an order.
+ * @author Miguel Nino Adalla
+ */
 public class PlacedOrders extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     ShareResource resource = ShareResource.getInstance();
 
@@ -32,6 +39,13 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
     Order order;
     int indexOfCurrentOrder;
 
+    /**
+     * This method runs whenever the placed order activity is opened/visited
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +58,6 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         orderTotal = findViewById(R.id.orderTotal);
         listView = findViewById(R.id.listView2);
 
-        //have to be called again when an order is removed
         //populate the orderNum arraylist
         for(Order order: orderList)
             orderNums.add(order.getOrderNumber());
@@ -61,14 +74,23 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         sp_orderNum.setOnItemSelectedListener(this);
     }
 
-    //when an item is chosen
+    /**
+     * This event Handler manages the listview and displays the content aligned with spinner item(order number)
+     * such as the order's list of pizzas and the total price.
+     * On default, this event Handler displays first item on the spinner object, which is the first element
+     * on the list of placed orders.
+     *
+     * @param parent The AdapterView where the selection happened
+     * @param view The view within the AdapterView that was clicked
+     * @param position The position of the view in the adapter
+     * @param id The row id of the item that is selected
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //get selected item
         String selectedItem = parent.getItemAtPosition(position).toString();
 
         indexOfCurrentOrder = Integer.parseInt(selectedItem)-1; //subtract one to get the index
-        System.out.println("The index of the current number is:" + indexOfCurrentOrder);
 
         //Show a Toast with the selected Item
         Toast.makeText(this, "Selected Order Number: " + selectedItem, Toast.LENGTH_SHORT).show();
@@ -85,24 +107,29 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
         listView.setAdapter(items); //set the adapter of the ListView to the source
     }
 
-    //default
+    /**
+     * This event Handler runs when nothing is selected on the spinner object
+     *
+     * @param parent The AdapterView that now contains no selected item.
+     */
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        //empty
+        Toast.makeText(this, "No Item Selected", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Removes the current order from the list of placed orders when the Cancel button is clicked.
+     *
+     * @param view the view within the cancelOrder button that was clicked
+     */
     public void cancelOrder(View view){
-        //change values of orderNum, orderNums arraylist is connected to adapter
         if(!orderList.isEmpty()){
 
             orderList.remove(indexOfCurrentOrder);
             orderNums.remove(indexOfCurrentOrder);
             obl_pizzas.clear();
 
-            /*for(Order order: orderList)
-                orderNums.add(order.getOrderNumber());
-            */
-            sp_orderNum.setAdapter(adapter); //change the orderNums
+            sp_orderNum.setAdapter(adapter); //update the order numbers
 
             if(orderList.isEmpty()) {
                 obl_pizzas.clear();
@@ -128,6 +155,5 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
             AlertDialog dialog = alert.create();
             dialog.show();
         }
-
     }
 }
