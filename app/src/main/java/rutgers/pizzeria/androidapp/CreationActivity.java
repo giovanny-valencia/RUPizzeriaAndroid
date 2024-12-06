@@ -16,13 +16,41 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import rutgers.pizzeria.androidapp.models.pizza.Pizza;
+import rutgers.pizzeria.androidapp.models.pizza.Topping;
+import rutgers.pizzeria.androidapp.models.pizza.Size;
+
+
 
 import rutgers.pizzeria.androidapp.recyclerview.ToppingModel;
 import rutgers.pizzeria.androidapp.recyclerview.ToppingAdapter;
 
+import rutgers.pizzeria.androidapp.models.factory.PizzaFactory;
+import rutgers.pizzeria.androidapp.models.factory.NYPizza;
+import rutgers.pizzeria.androidapp.models.factory.ChicagoPizza;
+
+import rutgers.pizzeria.androidapp.models.pizza.BuildYourOwn;
+import rutgers.pizzeria.androidapp.models.pizza.BBQChicken;
+import rutgers.pizzeria.androidapp.models.pizza.Deluxe;
+import rutgers.pizzeria.androidapp.models.pizza.Meatzza;
+
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String CHICAGO_CRUST = "Chicago";
     private static final String NEW_YORK_CRUST = "New York";
+    public static final String BYO = "Build Your Own";
+    public static final String BBQ_CHICKEN = "BBQ Chicken";
+    public static final String DELUXE = "Deluxe";
+    public static final String MEATZZA = "Meatzza";
+    private static final String SMALL = "SMALL";
+
+    private static final String MEDIUM = "MEDIUM";
+
+    private static final String LARGE = "LARGE";
+
     private Spinner spinnerCrustStylePizza;
 
     private Spinner spinnerSizePizza;
@@ -31,12 +59,9 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
     private String styleCrust = NEW_YORK_CRUST;
 
-    private HashMap<String, Integer> crustImageMap = new HashMap<>();
+    private final HashMap<String, Integer> crustImageMap = new HashMap<>();
 
     private ArrayList<ToppingModel> toppings;
-
-
-
 
 
     @Override
@@ -62,47 +87,123 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         ToppingAdapter adapter = new ToppingAdapter(this, toppings);
 
         recyclerView.setAdapter(adapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        for (int i = 0; i < toppings.size(); i++){
-            System.out.println(toppings.get(i).getName() + " - " + toppings.get(i).getImageResId());
-        }
-
+        //For specialty pizzas, assign the fixed toppings
+        assignToppings();
     }
 
     private void generatePizzaImageHash() {
-        String byo = "Build Your Own";
-        String bbqChicken = "BBQ Chicken";
-        String deluxe = "Deluxe";
-        String meatzza = "Meatzza";
 
-        if (selectedPizza.equals(byo)){
-            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
-            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
-        }
-        else if (selectedPizza.equals(bbqChicken)) {
-            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
-            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_bbq_chicken_thin_crust); //thin
-        }
-        else if (selectedPizza.equals(deluxe)) {
-            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_deluxe_chicago_deep_dish); //deep dish
-            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_brooklyn); //brooklyn
-        }
-        else if (selectedPizza.equals(meatzza)) {
-            crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_meatzza_stuffed); //stuffed
-            crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
+        switch (selectedPizza) {
+            case BYO -> {
+                crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
+                crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
+            }
+            case BBQ_CHICKEN -> {
+                crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_chicken_bbq_pan); //pan
+                crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_bbq_chicken_thin_crust); //thin
+            }
+            case DELUXE -> {
+                crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_deluxe_chicago_deep_dish); //deep dish
+                crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_brooklyn); //brooklyn
+            }
+            case MEATZZA -> {
+                crustImageMap.put(CHICAGO_CRUST, R.drawable.pizza_meatzza_stuffed); //stuffed
+                crustImageMap.put(NEW_YORK_CRUST, R.drawable.pizza_meatzza_hand_tossed); //hand-tossed
+            }
         }
     }
+
+    private void assignToppings() {
+        if (!selectedPizza.equals(BYO)) {
+            PizzaFactory tempPf = new NYPizza();
+            Pizza tempPizza;
+
+            // Assign the appropriate pizza
+            tempPizza = switch (selectedPizza) {
+                case BBQ_CHICKEN -> tempPf.createBBQChicken();
+                case DELUXE -> tempPf.createDeluxe();
+                case MEATZZA -> tempPf.createMeatzza();
+                default -> null;
+            };
+
+            // Safeguard against unexpected cases
+            if (tempPizza == null) {
+                System.err.println("Error: Selected pizza is invalid.");
+                return;
+            }
+
+            // Convert tempTopping to a Set for efficient lookups
+            Set<String> tempToppingSet = tempPizza.getToppings().stream()
+                    .map(topping -> topping.name().replace("_", " ").toUpperCase())
+                    .collect(Collectors.toSet());
+
+            // Assign and mark toppings
+            for (ToppingModel topping : toppings) {
+                topping.setEditable(false); // Specialty pizzas are not editable
+
+                if (tempToppingSet.contains(topping.getName().toUpperCase())) {
+                    topping.setChecked(true); // Mark the matching toppings as selected
+                }
+            }
+        }
+    }
+
 
     private void displayPizzaImage(String crust){
         ImageView imagePizza = findViewById(R.id.imagePizza);
         Integer img = crustImageMap.get(crust);
 
-        System.out.println(img);
-
         if (img != null){
             imagePizza.setImageResource(img);
         }
+    }
+
+    /**
+     * Creates a {@link Pizza} object based on the selected type and factory.
+     * <p>
+     * This method uses the Abstract Factory pattern to generate the pizza with predefined
+     * or user-selected configurations. For "Build Your Own" pizzas, toppings are retrieved
+     * dynamically from the user's selections.
+     * </p>
+     *
+     * @param pizzaSelection The selected pizza type (e.g., Deluxe, BBQ Chicken).
+     * @param pizzaFactory The factory to use for creating the pizza.
+     * @return A {@link Pizza} object, or null if creation fails.
+     */
+    private Pizza makePizza(String pizzaSelection, PizzaFactory pizzaFactory) {
+        Pizza pizza;
+
+        switch (pizzaSelection) {
+            case BYO -> {
+                // Logic for building your own pizza
+                pizza = pizzaFactory.createBuildYourOwn();
+
+                // get and set toppings, if null return
+               // ArrayList<Topping> toppings = getToppings();
+                //if (toppings == null) return null;
+
+                //pizza.setToppings(toppings);
+            }
+            case DELUXE -> {
+                // Logic for Deluxe pizza
+                pizza = pizzaFactory.createDeluxe();
+            }
+            case BBQ_CHICKEN -> {
+                // Logic for BBQ Chicken pizza
+                pizza = pizzaFactory.createBBQChicken();
+            }
+            case MEATZZA -> {
+                // Logic for Meatzza pizza
+                pizza = pizzaFactory.createMeatzza();
+            }
+            default -> { // this shouldn't happen, potential error handle?
+                return null;
+            }
+        }
+        return pizza;
     }
 
     private void setUpSpinners() {
@@ -126,8 +227,38 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         spinnerSizePizza.post(()-> spinnerSizePizza.setSelection(mediumPizzaSize));
     }
 
+    public void addToOrder(View view){
+
+        //make pizza base
+        PizzaFactory pizzaFactory = switch (spinnerCrustStylePizza.getSelectedItem().toString()) {
+            case CHICAGO_CRUST -> new ChicagoPizza();
+            default -> new NYPizza();
+        };
+
+
+        Pizza pizza = makePizza(selectedPizza, pizzaFactory);
+        if (pizza==null) return;
+
+        String sizeString = spinnerSizePizza.getSelectedItem().toString().toUpperCase();
+        Size size = switch (sizeString) {
+            case "SMALL" -> Size.SMALL;
+            case "LARGE" -> Size.LARGE;
+            default -> Size.MEDIUM;
+        };
+
+        pizza.setSize(size);
+
+        ShareResource shareResource = ShareResource.getInstance();
+
+        shareResource.getOrder().addPizza(pizza);
+
+        toppings.clear();
+        finish();
+    }
+
     //just returns to main activity
     public void onCancel(View view){
+        toppings.clear();
         finish();
     }
 

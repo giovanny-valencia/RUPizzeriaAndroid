@@ -57,6 +57,9 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
         // Set the CheckBox state based on the current item
         holder.checkBox.setChecked(topping.isChecked());
 
+        // Set the editable state
+        holder.checkBox.setEnabled(topping.isEditable());
+
         // Add a new listener to update the item's state
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked)
                 -> topping.setChecked(isChecked)); // Update the item's state in the model

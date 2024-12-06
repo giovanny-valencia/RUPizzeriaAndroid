@@ -9,6 +9,8 @@ public class ToppingModel {
     private final String name;
     private final int imageResId;
     private boolean isChecked;
+    private boolean isEditable;
+
 
 
     // Static list to hold all toppings
@@ -23,10 +25,11 @@ public class ToppingModel {
             R.drawable.icon_topping_sausage
     };
 
-    private ToppingModel(String name, int imageResId, boolean isChecked) {
+    private ToppingModel(String name, int imageResId, boolean isChecked, boolean isEditable) {
         this.name = name;
         this.imageResId = imageResId;
         this.isChecked = isChecked;
+        this.isEditable = isEditable;
     }
 
     public String getName() {
@@ -45,7 +48,16 @@ public class ToppingModel {
         isChecked = checked;
     }
 
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+    }
+
     // Set up toppings with a context to access resources
+
     private static void setUpToppings(Context context) {
         if (!toppings.isEmpty()) {
             return; // Prevent duplicate initialization
@@ -54,12 +66,12 @@ public class ToppingModel {
         String[] names = context.getResources().getStringArray(R.array.toppings);
 
         for (int i = 0; i < names.length; i++){
-            ToppingModel topping = new ToppingModel(names[i], img[i], false);
+            ToppingModel topping = new ToppingModel(names[i], img[i], false, true);
             toppings.add(topping);
         }
     }
-
     // called by main activity to get and pass creation the toppings
+
     public static ArrayList<ToppingModel> getToppings(Context context) {
         if (toppings.isEmpty()){
             setUpToppings(context);
