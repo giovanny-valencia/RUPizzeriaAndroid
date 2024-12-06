@@ -1,11 +1,15 @@
-package rutgers.pizzeria.androidapp;
+package rutgers.pizzeria.androidapp.recyclerview;
 
 import android.content.Context;
 import java.util.ArrayList;
 
+import rutgers.pizzeria.androidapp.R;
+
 public class ToppingModel {
     private final String name;
     private final int imageResId;
+    private boolean isChecked;
+
 
     // Static list to hold all toppings
     private static final ArrayList<ToppingModel> toppings = new ArrayList<>();
@@ -19,9 +23,10 @@ public class ToppingModel {
             R.drawable.icon_topping_sausage
     };
 
-    private ToppingModel(String name, int imageResId) {
+    private ToppingModel(String name, int imageResId, boolean isChecked) {
         this.name = name;
         this.imageResId = imageResId;
+        this.isChecked = isChecked;
     }
 
     public String getName() {
@@ -30,6 +35,14 @@ public class ToppingModel {
 
     public int getImageResId() {
         return imageResId;
+    }
+
+    public boolean isChecked(){
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked){
+        isChecked = checked;
     }
 
     // Set up toppings with a context to access resources
@@ -41,7 +54,7 @@ public class ToppingModel {
         String[] names = context.getResources().getStringArray(R.array.toppings);
 
         for (int i = 0; i < names.length; i++){
-            ToppingModel topping = new ToppingModel(names[i], img[i]);
+            ToppingModel topping = new ToppingModel(names[i], img[i], false);
             toppings.add(topping);
         }
     }

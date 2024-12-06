@@ -8,8 +8,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import rutgers.pizzeria.androidapp.recyclerview.ToppingModel;
 
 public class MainActivity extends AppCompatActivity {
     List<ToppingModel> toppings;
@@ -27,9 +28,7 @@ public class MainActivity extends AppCompatActivity {
         String tag = (String) imgBtn.getTag(); // Read the tag
         Toast.makeText(this, "Clicked: " + tag, Toast.LENGTH_SHORT).show();
 
-
         Intent intent = new Intent(this, CreationActivity.class);
-
 
         intent.putExtra("pizzaSelected",tag);
 

@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import rutgers.pizzeria.androidapp.recyclerview.ToppingModel;
+import rutgers.pizzeria.androidapp.recyclerview.ToppingAdapter;
+
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String CHICAGO_CRUST = "Chicago";
     private static final String NEW_YORK_CRUST = "New York";
@@ -56,7 +59,7 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        Topping_RecyclerViewAdapter adapter = new Topping_RecyclerViewAdapter(this, toppings);
+        ToppingAdapter adapter = new ToppingAdapter(this, toppings);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
