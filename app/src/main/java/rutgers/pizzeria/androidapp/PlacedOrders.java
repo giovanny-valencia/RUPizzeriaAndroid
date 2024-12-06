@@ -89,22 +89,28 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //get selected item
         String selectedItem = parent.getItemAtPosition(position).toString();
+        int selectedOrderNumber = Integer.parseInt(selectedItem); // Parse as order number
 
-        indexOfCurrentOrder = Integer.parseInt(selectedItem)-1; //subtract one to get the index
+        // Find the corresponding order by matching the order number
+        for (int i = 0; i < orderList.size(); i++) {
+            if (orderList.get(i).getOrderNumber() == selectedOrderNumber) {
+                indexOfCurrentOrder = i; // Get the index of the matched order
+                break;
+            }
+        }
 
-        //Show a Toast with the selected Item
-        Toast.makeText(this, "Selected Order Number: " + selectedItem, Toast.LENGTH_SHORT).show();
-
+        // display order details
         order = orderList.get(indexOfCurrentOrder);
-
         pizzas = order.getPizzas();
         orderTotal.setText(String.format("$%.2f", order.calculateTotal()));
 
         obl_pizzas = new ObservableArrayList<>();
-        items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
-
         obl_pizzas.addAll(pizzas);
+        items = new ArrayAdapter<Pizza>(this, android.R.layout.simple_list_item_1, obl_pizzas);
         listView.setAdapter(items); //set the adapter of the ListView to the source
+
+        //Show a Toast with the selected Item
+        Toast.makeText(this, "Selected Order Number: " + selectedItem, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -131,6 +137,7 @@ public class PlacedOrders extends AppCompatActivity implements AdapterView.OnIte
 
             sp_orderNum.setAdapter(adapter); //update the order numbers
 
+            //Clear UI if the list is empty
             if(orderList.isEmpty()) {
                 obl_pizzas.clear();
                 items.notifyDataSetChanged();
