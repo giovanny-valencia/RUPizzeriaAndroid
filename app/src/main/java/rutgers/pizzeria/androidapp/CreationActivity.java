@@ -262,8 +262,6 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
         toppingModels.clear();
 
-        System.out.println(pizza.toString());
-
         finish();
     }
 
@@ -288,8 +286,6 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
                 pizza = pizzaFactory.createBuildYourOwn();
 
                 ArrayList<Topping> toppings = adapter.getToppings();
-
-                System.out.println("CA t: " + toppings);
 
                 if (toppings.isEmpty()){
                     Toast.makeText(this, "Select at least 1 topping", Toast.LENGTH_SHORT).show();

@@ -103,8 +103,6 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
             }
             else toppings.add(selectedTopping);
 
-            System.out.println(toppings);
-
             // Update selection logic
             updateSelectionLogic();
         });
