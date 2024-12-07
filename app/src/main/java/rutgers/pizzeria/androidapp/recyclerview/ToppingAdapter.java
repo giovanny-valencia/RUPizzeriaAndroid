@@ -11,44 +11,68 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import rutgers.pizzeria.androidapp.R;
 import rutgers.pizzeria.androidapp.models.pizza.Topping;
 
+
+/**
+ * ToppingAdapter is a RecyclerView.Adapter implementation used to display a list of toppings in a RecyclerView.
+ * <p>
+ * It binds {@link ToppingModel} data to RecyclerView rows, allowing users to select toppings for their pizza.
+ * The adapter manages selection logic to ensure no more than {@value MAXIMUM_TOPPINGS} toppings are selected.
+ * </p>
+ *
+ * <p>
+ * This adapter is designed for use with the pizza creation screen in the application.
+ * </p>
+ *
+ * @author Giovanny
+ */
 public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingHolder> {
+    private static final int MAXIMUM_TOPPINGS = 7;
+
     Context context;
     ArrayList<ToppingModel> toppingModels;
 
     private final ArrayList<Topping> toppings = new ArrayList<>();
 
 
+    /**
+     * Constructs a new {@link ToppingAdapter}.
+     *
+     * @param context The application context.
+     * @param toppingModels The list of available toppings to display in the RecyclerView.
+     */
     public ToppingAdapter(Context context, ArrayList<ToppingModel> toppingModels){
         this.context = context;
         this.toppingModels = toppingModels;
     }
 
     /**
-     * This method will inflate the row layout for the items in the RecyclerView
-     * @param parent of view
-     * @param viewType of view
-     * @return the view
+     * Inflates the layout for a RecyclerView row.
+     *
+     * @param parent The parent ViewGroup into which the new view will be added.
+     * @param viewType The view type of the new view (unused in this implementation).
+     * @return A {@link ToppingHolder} instance holding the inflated view.
      */
     @NonNull
     @Override
     public ToppingHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //inflate layout (gives look to rows)
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.topping_item, parent, false);
         return new ToppingHolder(view);
     }
 
     /**
-     * Assign data values for each row according to their "position" (index) when the item becomes
-     * visible on the screen.
-     * @param holder the instance of ItemsHolder
-     * @param position the index of the item in the list of items
+     * Binds the data for a specific position in the RecyclerView.
+     * <p>
+     * This method assigns data from the {@link ToppingModel} to the views in the corresponding row
+     * and manages the selection and editing logic for each topping.
+     * </p>
+     *
+     * @param holder The {@link ToppingHolder} instance for the row.
+     * @param position The position of the item in the data list.
      */
     @Override
     public void onBindViewHolder(@NonNull ToppingHolder holder, int position) {
@@ -67,7 +91,6 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
         // Set the editable state
         holder.checkBox.setEnabled(topping.isEditable());
 
-        // Add a new listener to update the item's state
         // Add a listener to handle clicks
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             topping.setChecked(isChecked); // Update the item's state
@@ -88,21 +111,31 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
     }
 
     /**
-     * Get the number of items in the ArrayList.
-     * @return the number of items in the list.
+     * Returns the total number of items in the data list.
+     *
+     * @return The number of {@link ToppingModel} items.
      */
     @Override
     public int getItemCount() {
-        //how many items in total
         return toppingModels.size();
     }
 
+    /**
+     * ViewHolder class for holding views related to each topping item.
+     * <p>
+     * This class provides references to the views (e.g., {@link CheckBox} and {@link ImageView})
+     * used in each row of the RecyclerView.
+     * </p>
+     */
     public static class ToppingHolder extends RecyclerView.ViewHolder{
-        //gets views from RV layout file
-
         CheckBox checkBox;
         ImageView imageView;
 
+        /**
+         * Constructs a new {@link ToppingHolder}.
+         *
+         * @param itemView The root view of the row layout.
+         */
         public ToppingHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -111,10 +144,18 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
         }
     }
 
+    /**
+     * Updates the selection logic to enforce a maximum of 7 selected toppings.
+     * <p>
+     * When the maximum number of toppings is selected, all other CheckBoxes are disabled.
+     * Otherwise, all CheckBoxes are re-enabled. This method refreshes the RecyclerView
+     * to apply these changes.
+     * </p>
+     */
     private void updateSelectionLogic() {
         long selectedCount = toppingModels.stream().filter(ToppingModel::isChecked).count();
 
-        if (selectedCount >= 7) {
+        if (selectedCount >= MAXIMUM_TOPPINGS) {
             // Disable other checkboxes except the selected ones
             for (ToppingModel model : toppingModels) {
                 if (!model.isChecked()) {
@@ -132,6 +173,11 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
         notifyDataSetChanged();
     }
 
+    /**
+     * Retrieves the list of currently selected toppings.
+     *
+     * @return An {@link ArrayList} of selected {@link Topping} objects.
+     */
     public ArrayList<Topping> getToppings() {
         return toppings;
     }

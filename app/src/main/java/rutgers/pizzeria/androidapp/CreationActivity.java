@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +32,23 @@ import rutgers.pizzeria.androidapp.models.factory.PizzaFactory;
 import rutgers.pizzeria.androidapp.models.factory.NYPizza;
 import rutgers.pizzeria.androidapp.models.factory.ChicagoPizza;
 
+/**
+ * CreationActivity is responsible for managing the pizza creation screen in the Android application.
+ * It allows users to select the type of pizza, crust style, size, and toppings,
+ * and facilitates the addition of the configured pizza to the order.
+ * <p>
+ * This activity supports:
+ * <ul>
+ *     <li>Dynamic pizza image updates based on selected crust style.</li>
+ *     <li>Predefined toppings for specialty pizzas (non-editable).</li>
+ *     <li>Customizable toppings for "Build Your Own" pizzas.</li>
+ *     <li>Integration with RecyclerView for displaying and selecting toppings.</li>
+ *     <li>Use of spinners for size and crust style selection.</li>
+ * </ul>
+ * </p>
+ *
+ * @author Giovanny
+ */
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String CHICAGO_CRUST = "Chicago";
     private static final String NEW_YORK_CRUST = "New York";
@@ -46,22 +62,26 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
     private static final String LARGE = "LARGE";
 
-    private static final int MAX_TOPPINGS = 7;
-
     private Spinner spinnerCrustStylePizza;
 
     private Spinner spinnerSizePizza;
 
     private String selectedPizza = null;
-
-    private String styleCrust = NEW_YORK_CRUST;
-
     private final HashMap<String, Integer> crustImageMap = new HashMap<>();
 
     private ArrayList<ToppingModel> toppingModels;
 
     ToppingAdapter adapter;
 
+    /**
+     * Initializes the activity, sets up UI components, and handles pizza configuration.
+     * <p>
+     * The method retrieves the selected pizza type from the Intent, sets up spinners,
+     * generates images for pizza crusts, and configures the RecyclerView for toppings.
+     * </p>
+     *
+     * @param savedInstanceState The saved state of the activity, if any.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         String intentKey = "pizzaSelected";
@@ -93,6 +113,13 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         assignToppings();
     }
 
+    /**
+     * Generates a mapping of crust styles to their respective pizza images.
+     * <p>
+     * This method assigns specific images for each combination of pizza type and crust style,
+     * enabling dynamic updates in the UI.
+     * </p>
+     */
     private void generatePizzaImageHash() {
 
         switch (selectedPizza) {
@@ -115,6 +142,14 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+
+    /**
+     * Assigns toppings for specialty pizzas and disables editing for these pizzas.
+     * <p>
+     * For "Build Your Own" pizzas, toppings remain editable and are not preselected.
+     * This method ensures that specialty pizzas display their fixed toppings in the UI.
+     * </p>
+     */
     private void assignToppings() {
         if (!selectedPizza.equals(BYO)) {
             PizzaFactory tempPf = new NYPizza();
@@ -151,6 +186,11 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
     }
 
 
+    /**
+     * Displays the appropriate pizza image based on the selected crust style.
+     *
+     * @param crust The selected crust style (e.g., Chicago, New York).
+     */
     private void displayPizzaImage(String crust){
         ImageView imagePizza = findViewById(R.id.imagePizza);
         Integer img = crustImageMap.get(crust);
@@ -160,6 +200,13 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    /**
+     * Configures the spinners for crust style and size selection.
+     * <p>
+     * This method initializes the spinners with predefined options, sets the default
+     * selection for size to "Medium," and assigns listeners for user interactions.
+     * </p>
+     */
     private void setUpSpinners() {
         int mediumPizzaSize = 1;
 
@@ -181,8 +228,16 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         spinnerSizePizza.post(()-> spinnerSizePizza.setSelection(mediumPizzaSize));
     }
 
+    /**
+     * Adds the configured pizza to the current order.
+     * <p>
+     * The method retrieves user selections for crust style, size, and toppings,
+     * creates the pizza object using a factory pattern, and adds it to the shared order resource.
+     * </p>
+     *
+     * @param view The view that triggered this action (e.g., a button).
+     */
     public void addToOrder(View view){
-
         //make pizza base
         PizzaFactory pizzaFactory = switch (spinnerCrustStylePizza.getSelectedItem().toString()) {
             case CHICAGO_CRUST -> new ChicagoPizza();
@@ -194,8 +249,8 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
         String sizeString = spinnerSizePizza.getSelectedItem().toString().toUpperCase();
         Size size = switch (sizeString) {
-            case "SMALL" -> Size.SMALL;
-            case "LARGE" -> Size.LARGE;
+            case SMALL -> Size.SMALL;
+            case LARGE -> Size.LARGE;
             default -> Size.MEDIUM;
         };
 
@@ -262,12 +317,30 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         return pizza;
     }
 
-    //just returns to main activity
+    /**
+     * Clears the toppings list and returns to the main activity.
+     * <p>
+     * This method is triggered when the user cancels the pizza creation process.
+     * </p>
+     *
+     * @param view The view that triggered this action (e.g., a button).
+     */
     public void onCancel(View view){
         toppingModels.clear();
         finish();
     }
 
+    /**
+     * Handles item selection events for spinners.
+     * <p>
+     * Updates the pizza display image when the crust style spinner selection changes.
+     * </p>
+     *
+     * @param adapterView The adapter view where the selection occurred.
+     * @param view The view within the adapter view that was clicked.
+     * @param i The position of the selected item.
+     * @param l The row id of the selected item.
+     */
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         //only attempt to change the pizza display image if the adapter is linked to crust spinner
@@ -276,6 +349,15 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
+    /**
+     * Callback for when no item is selected in a spinner.
+     * <p>
+     * This method is required to implement the {@link AdapterView.OnItemSelectedListener} interface,
+     * but it does not perform any actions.
+     * </p>
+     *
+     * @param adapterView The adapter view where no selection was made.
+     */
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         //do nothing
