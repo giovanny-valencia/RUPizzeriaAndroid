@@ -11,12 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import rutgers.pizzeria.androidapp.R;
+import rutgers.pizzeria.androidapp.models.pizza.Topping;
 
 public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingHolder> {
     Context context;
     ArrayList<ToppingModel> toppingModels;
+
+    private final ArrayList<Topping> toppings = new ArrayList<>();
+
+
     public ToppingAdapter(Context context, ArrayList<ToppingModel> toppingModels){
         this.context = context;
         this.toppingModels = toppingModels;
@@ -61,8 +68,23 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
         holder.checkBox.setEnabled(topping.isEditable());
 
         // Add a new listener to update the item's state
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked)
-                -> topping.setChecked(isChecked)); // Update the item's state in the model
+        // Add a listener to handle clicks
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            topping.setChecked(isChecked); // Update the item's state
+
+
+            Topping selectedTopping = topping.getToppingEnum(topping.getName().toUpperCase());
+
+            if (!topping.isChecked()){
+                toppings.remove(selectedTopping);
+            }
+            else toppings.add(selectedTopping);
+
+            System.out.println(toppings);
+
+            // Update selection logic
+            updateSelectionLogic();
+        });
     }
 
     /**
@@ -87,5 +109,30 @@ public class ToppingAdapter extends RecyclerView.Adapter<ToppingAdapter.ToppingH
             checkBox = itemView.findViewById(R.id.checkBox);
             imageView = itemView.findViewById(R.id.imageView);
         }
+    }
+
+    private void updateSelectionLogic() {
+        long selectedCount = toppingModels.stream().filter(ToppingModel::isChecked).count();
+
+        if (selectedCount >= 7) {
+            // Disable other checkboxes except the selected ones
+            for (ToppingModel model : toppingModels) {
+                if (!model.isChecked()) {
+                    model.setEditable(false);
+                }
+            }
+        } else {
+            // Re-enable all checkboxes if under the limit
+            for (ToppingModel model : toppingModels) {
+                model.setEditable(true);
+            }
+        }
+
+        // Refresh the RecyclerView to apply the changes
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Topping> getToppings() {
+        return toppings;
     }
 }

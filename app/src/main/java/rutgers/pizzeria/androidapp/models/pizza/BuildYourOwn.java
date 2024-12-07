@@ -49,7 +49,7 @@ public class BuildYourOwn extends Pizza {
             s = String.format("Build Your Own (Chicago Style-%s), %s, %s, $%.2f", getCrust().name(), getToppings().toString(), getSize().name(), price());
         }
         else if(getCrust() == Crust.HAND_TOSSED) {
-            s = String.format("Build Your Own (NYStyle-%s), %s, %s, $%.2f", getCrust().name(), getSize().toString(), getSize().name(), price());
+            s = String.format("Build Your Own (NYStyle-%s), %s, %s, $%.2f", getCrust().name(), getToppings().toString(), getSize().name(), price());
         }
         return s;
     }

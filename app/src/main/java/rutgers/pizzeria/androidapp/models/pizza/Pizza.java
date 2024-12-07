@@ -64,7 +64,7 @@ public abstract class Pizza {
 
     /**
      * Setter method to set the pizza's size
-     * @param size
+     * @param size of pizza
      */
     public void setSize(Size size){
         this.size = size;

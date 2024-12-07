@@ -4,6 +4,7 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import rutgers.pizzeria.androidapp.R;
+import rutgers.pizzeria.androidapp.models.pizza.Topping;
 
 public class ToppingModel {
     private final String name;
@@ -79,4 +80,25 @@ public class ToppingModel {
 
         return toppings;
     }
+
+    public Topping getToppingEnum(String name) {
+        return switch (name.toUpperCase()) {
+            case "BACON" -> Topping.BACON;
+            case "BBQ CHICKEN" -> Topping.BBQ_CHICKEN;
+            case "BEEF" -> Topping.BEEF;
+            case "CHEDDAR" -> Topping.CHEDDAR;
+            case "GARLIC" -> Topping.GARLIC;
+            case "GREEN PEPPER" -> Topping.GREEN_PEPPER;
+            case "HAM" -> Topping.HAM;
+            case "MUSHROOM" -> Topping.MUSHROOM;
+            case "ONION" -> Topping.ONION;
+            case "PEPPERONI" -> Topping.PEPPERONI;
+            case "PINEAPPLE" -> Topping.PINEAPPLE;
+            case "PROVOLONE" -> Topping.PROVOLONE;
+            case "SAUSAGE" -> Topping.SAUSAGE;
+            default -> throw new IllegalArgumentException("Unknown topping: " + name);
+        };
+    }
+
+
 }

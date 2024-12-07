@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,11 +33,6 @@ import rutgers.pizzeria.androidapp.models.factory.PizzaFactory;
 import rutgers.pizzeria.androidapp.models.factory.NYPizza;
 import rutgers.pizzeria.androidapp.models.factory.ChicagoPizza;
 
-import rutgers.pizzeria.androidapp.models.pizza.BuildYourOwn;
-import rutgers.pizzeria.androidapp.models.pizza.BBQChicken;
-import rutgers.pizzeria.androidapp.models.pizza.Deluxe;
-import rutgers.pizzeria.androidapp.models.pizza.Meatzza;
-
 public class CreationActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String CHICAGO_CRUST = "Chicago";
     private static final String NEW_YORK_CRUST = "New York";
@@ -51,6 +46,8 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
     private static final String LARGE = "LARGE";
 
+    private static final int MAX_TOPPINGS = 7;
+
     private Spinner spinnerCrustStylePizza;
 
     private Spinner spinnerSizePizza;
@@ -61,8 +58,9 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
     private final HashMap<String, Integer> crustImageMap = new HashMap<>();
 
-    private ArrayList<ToppingModel> toppings;
+    private ArrayList<ToppingModel> toppingModels;
 
+    ToppingAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +78,12 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
         generatePizzaImageHash();
 
-        toppings = ToppingModel.getToppings(this);
+        toppingModels = ToppingModel.getToppings(this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
-        ToppingAdapter adapter = new ToppingAdapter(this, toppings);
+        adapter = new ToppingAdapter(this, toppingModels);
+
 
         recyclerView.setAdapter(adapter);
 
@@ -131,7 +130,6 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
             // Safeguard against unexpected cases
             if (tempPizza == null) {
-                System.err.println("Error: Selected pizza is invalid.");
                 return;
             }
 
@@ -141,7 +139,7 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
                     .collect(Collectors.toSet());
 
             // Assign and mark toppings
-            for (ToppingModel topping : toppings) {
+            for (ToppingModel topping : toppingModels) {
                 topping.setEditable(false); // Specialty pizzas are not editable
 
                 if (tempToppingSet.contains(topping.getName().toUpperCase())) {
@@ -149,6 +147,7 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
                 }
             }
         }
+
     }
 
 
@@ -159,51 +158,6 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
         if (img != null){
             imagePizza.setImageResource(img);
         }
-    }
-
-    /**
-     * Creates a {@link Pizza} object based on the selected type and factory.
-     * <p>
-     * This method uses the Abstract Factory pattern to generate the pizza with predefined
-     * or user-selected configurations. For "Build Your Own" pizzas, toppings are retrieved
-     * dynamically from the user's selections.
-     * </p>
-     *
-     * @param pizzaSelection The selected pizza type (e.g., Deluxe, BBQ Chicken).
-     * @param pizzaFactory The factory to use for creating the pizza.
-     * @return A {@link Pizza} object, or null if creation fails.
-     */
-    private Pizza makePizza(String pizzaSelection, PizzaFactory pizzaFactory) {
-        Pizza pizza;
-
-        switch (pizzaSelection) {
-            case BYO -> {
-                // Logic for building your own pizza
-                pizza = pizzaFactory.createBuildYourOwn();
-
-                // get and set toppings, if null return
-               // ArrayList<Topping> toppings = getToppings();
-                //if (toppings == null) return null;
-
-                //pizza.setToppings(toppings);
-            }
-            case DELUXE -> {
-                // Logic for Deluxe pizza
-                pizza = pizzaFactory.createDeluxe();
-            }
-            case BBQ_CHICKEN -> {
-                // Logic for BBQ Chicken pizza
-                pizza = pizzaFactory.createBBQChicken();
-            }
-            case MEATZZA -> {
-                // Logic for Meatzza pizza
-                pizza = pizzaFactory.createMeatzza();
-            }
-            default -> { // this shouldn't happen, potential error handle?
-                return null;
-            }
-        }
-        return pizza;
     }
 
     private void setUpSpinners() {
@@ -235,7 +189,6 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
             default -> new NYPizza();
         };
 
-
         Pizza pizza = makePizza(selectedPizza, pizzaFactory);
         if (pizza==null) return;
 
@@ -252,22 +205,71 @@ public class CreationActivity extends AppCompatActivity implements AdapterView.O
 
         shareResource.getOrder().addPizza(pizza);
 
-        toppings.clear();
+        toppingModels.clear();
+
+        System.out.println(pizza.toString());
+
         finish();
+    }
+
+    /**
+     * Creates a {@link Pizza} object based on the selected type and factory.
+     * <p>
+     * This method uses the Abstract Factory pattern to generate the pizza with predefined
+     * or user-selected configurations. For "Build Your Own" pizzas, toppings are retrieved
+     * dynamically from the user's selections.
+     * </p>
+     *
+     * @param pizzaSelection The selected pizza type (e.g., Deluxe, BBQ Chicken).
+     * @param pizzaFactory The factory to use for creating the pizza.
+     * @return A {@link Pizza} object, or null if creation fails.
+     */
+    private Pizza makePizza(String pizzaSelection, PizzaFactory pizzaFactory) {
+        Pizza pizza;
+
+        switch (pizzaSelection) {
+            case BYO -> {
+                // Logic for building your own pizza
+                pizza = pizzaFactory.createBuildYourOwn();
+
+                ArrayList<Topping> toppings = adapter.getToppings();
+
+                System.out.println("CA t: " + toppings);
+
+                if (toppings.isEmpty()){
+                    Toast.makeText(this, "Select at least 1 topping", Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+
+                pizza.setToppings(toppings);
+            }
+            case DELUXE -> {
+                // Logic for Deluxe pizza
+                pizza = pizzaFactory.createDeluxe();
+            }
+            case BBQ_CHICKEN -> {
+                // Logic for BBQ Chicken pizza
+                pizza = pizzaFactory.createBBQChicken();
+            }
+            case MEATZZA -> {
+                // Logic for Meatzza pizza
+                pizza = pizzaFactory.createMeatzza();
+            }
+            default -> { // this shouldn't happen, potential error handle?
+                return null;
+            }
+        }
+        return pizza;
     }
 
     //just returns to main activity
     public void onCancel(View view){
-        toppings.clear();
+        toppingModels.clear();
         finish();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String selected = adapterView.getItemAtPosition(i).toString();
-
-        Toast.makeText(getApplicationContext(), selected, Toast.LENGTH_SHORT).show(); // for debugging, remove this
-
         //only attempt to change the pizza display image if the adapter is linked to crust spinner
         if (adapterView.getId() == R.id.spinnerCrustStylePizza){
             displayPizzaImage(spinnerCrustStylePizza.getSelectedItem().toString());
